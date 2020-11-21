@@ -55,7 +55,13 @@ pipeline{
                     sh "docker push 646075469151.dkr.ecr.us-east-1.amazonaws.com/phonebook/app:latest"
                 }
             }
-        
+        stage('compose'){
+            agent any
+            steps{
+                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 646075469151.dkr.ecr.us-east-1.amazonaws.com"
+                    sh "docker-compose up -d"
+                }
+            }
     }
        
 }

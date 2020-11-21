@@ -43,7 +43,7 @@ pipeline{
         stage('build'){
             agent any
             steps{
-                    sh "docker build -t phonebook/app."
+                    sh "docker build -t phonebook/app ."
                     sh "docker tag phonebook/app 646075469151.dkr.ecr.us-east-1.amazonaws.com/phonebook/app:latest"
                 }
             }

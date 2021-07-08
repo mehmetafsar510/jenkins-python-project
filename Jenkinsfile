@@ -26,6 +26,23 @@ pipeline{
             }
             
         }
+        stage('test') {
+            agent {
+                docker {
+                    image 'python:alpine'
+                }
+            }
+            steps {
+                withEnv(["HOME=${env.WORKSPACE}"]) {
+                     sh 'python -m pytest -v --junit-xml results.xml src/appTest.py'
+                }
+            }
+            post {
+                always {
+                    junit 'results.xml'
+                }
+            }
+        }
         
         stage('build'){
             agent any
@@ -44,7 +61,6 @@ pipeline{
         stage('compose'){
             agent any
             steps{
-                withEnv(["PATH=$PATH:~/.local/bin"])
                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$ECR_REGISTRY"'
                     sh "docker-compose up -d"
                 }

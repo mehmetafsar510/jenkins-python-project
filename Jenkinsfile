@@ -45,7 +45,7 @@ pipeline{
             agent any
             steps{
                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$ECR_REGISTRY"'
-                    sh 'docker-compose up -d'
+                    sh "docker-compose up -d"
                 }
             }
     }

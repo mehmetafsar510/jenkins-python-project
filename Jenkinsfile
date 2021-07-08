@@ -7,6 +7,8 @@ pipeline{
         MYSQL_DATABASE_DB = "phonebook"
         MYSQL_DATABASE_PORT = 3306
         PATH="/usr/local/bin/:${env.PATH}"
+        ECR_REGISTRY = "646075469151.dkr.ecr.us-east-1.amazonaws.com"
+        APP_REPO_NAME= "phonebook/app"
     }
     stages{
         stage("compile"){
@@ -44,22 +46,22 @@ pipeline{
         stage('build'){
             agent any
             steps{
-                    sh "docker build -t phonebook/app ."
-                    sh "docker tag phonebook/app 646075469151.dkr.ecr.us-east-1.amazonaws.com/phonebook/app:latest"
+                    sh 'docker build -t phonebook/app .'
+                    sh 'docker tag phonebook/app "$ECR_REGISTRY/$APP_REPO_NAME":latest'
                 }
             }
         stage('push'){
             agent any
             steps{
-                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 646075469151.dkr.ecr.us-east-1.amazonaws.com"
-                    sh "docker push 646075469151.dkr.ecr.us-east-1.amazonaws.com/phonebook/app:latest"
+                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$ECR_REGISTRY"'
+                    sh 'docker push "$ECR_REGISTRY/$APP_REPO_NAME":latest'
                 }
             }
         stage('compose'){
             agent any
             steps{
-                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 646075469151.dkr.ecr.us-east-1.amazonaws.com"
-                    sh "docker-compose up -d"
+                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$ECR_REGISTRY"'
+                    sh 'docker-compose up -d'
                 }
             }
     }

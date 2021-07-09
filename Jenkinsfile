@@ -6,7 +6,6 @@ pipeline{
         MYSQL_DATABASE_USER = "admin"
         MYSQL_DATABASE_DB = "phonebook"
         MYSQL_DATABASE_PORT = 3306
-        PATH="/usr/local/bin/:${env.PATH}"
         ECR_REGISTRY = "646075469151.dkr.ecr.us-east-1.amazonaws.com"
         APP_REPO_NAME= "phonebook/app"
     }
